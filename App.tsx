@@ -56,7 +56,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffff",
     marginBottom: 100,
   },
   goalAddView: {
