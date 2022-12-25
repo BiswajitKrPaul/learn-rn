@@ -1,12 +1,7 @@
 import { useState } from "react";
-import {
-  Button,
-  FlatList,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Button, FlatList, StyleSheet, TextInput, View } from "react-native";
+import GoalInput from "./components/GoalInput";
+import GoalListTile from "./components/GoalListTile";
 
 type GoalModel = {
   id: string;
@@ -14,14 +9,9 @@ type GoalModel = {
 };
 
 export default function App() {
-  const [enteredGoal, setEnteredGoal] = useState<string>("");
   const [listOfGoals, setListofGoals] = useState<GoalModel[]>([]);
 
-  const onEnteredGoal = (goal: string) => {
-    setEnteredGoal(goal);
-  };
-
-  const onAddGoalPressed = () => {
+  const onAddGoalPressed = (enteredGoal: string) => {
     if (enteredGoal.length != 0) {
       setListofGoals((oldGoals) => [
         ...oldGoals,
@@ -30,21 +20,24 @@ export default function App() {
     }
   };
 
+  const onGoalRemove = (id: string) => {
+    setListofGoals((oldGoalList) => {
+      return oldGoalList.filter((goal) => goal.id != id);
+    });
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.goalAddView}>
-        <TextInput style={styles.textInput} onChangeText={onEnteredGoal} />
-        <View style={styles.addButton}>
-          <Button title="Add Goal" color="#841584" onPress={onAddGoalPressed} />
-        </View>
-      </View>
+      <GoalInput onGoalAdd={onAddGoalPressed} />
       <View style={styles.goalsView}>
         <FlatList
           data={listOfGoals}
           renderItem={(item) => (
-            <View style={styles.goalItem}>
-              <Text>{item.item.value}</Text>
-            </View>
+            <GoalListTile
+              text={item.item.value}
+              id={item.item.id}
+              onGoalRemove={onGoalRemove}
+            />
           )}
           keyExtractor={(item) => item.id}
         />
@@ -59,27 +52,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     marginBottom: 100,
   },
-  goalAddView: {
-    marginTop: 16,
-    flexDirection: "row",
-    alignContent: "space-between",
-  },
-  textInput: {
-    flex: 1,
-    borderWidth: 1,
-    paddingHorizontal: 8,
-    borderRadius: 8,
-  },
-  addButton: {
-    marginLeft: 8,
-  },
   goalsView: {
     marginTop: 16,
-  },
-  goalItem: {
-    padding: 8,
-    borderRadius: 10,
-    borderWidth: 1,
-    marginBottom: 8,
   },
 });
